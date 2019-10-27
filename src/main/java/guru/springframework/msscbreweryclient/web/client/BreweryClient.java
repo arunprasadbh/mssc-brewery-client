@@ -11,6 +11,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
 import java.util.UUID;
 
 @Slf4j
@@ -19,7 +20,7 @@ import java.util.UUID;
 public class BreweryClient {
     private final String BEER_PATH_V1 = "/api/v1/beer/";
 
-    private String apihost="http://localhost:8080";
+    private String apihost;
 
     private RestTemplate restTemplate;
 
@@ -32,5 +33,28 @@ public class BreweryClient {
         log.info("UUID value is {}", uuid.toString());
         log.info("URL is {}", apihost + BEER_PATH_V1 + uuid.toString());
         return restTemplate.getForObject(apihost + BEER_PATH_V1 + uuid.toString(), BeerDto.class);
+    }
+
+    public URI saveBeerDto(BeerDto beerDto) {
+        log.info("BreweryClient: in method saveBeerDto");
+
+        return restTemplate.postForLocation(apihost + BEER_PATH_V1, beerDto);
+
+    }
+
+    public void updateBeer(UUID uuid, BeerDto beerDto) {
+        log.info("BreweryClient: in method updateBeer");
+
+         restTemplate.put(apihost+BEER_PATH_V1+uuid, beerDto);
+    }
+
+    public void deleteBeer(UUID uuid) {
+        restTemplate.delete(apihost + BEER_PATH_V1 + uuid, uuid);
+    }
+
+
+
+    public void setApihost(String apihost) {
+        this.apihost = apihost;
     }
 }
